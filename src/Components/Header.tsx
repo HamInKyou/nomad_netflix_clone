@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link, useMatch } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { useState } from "react";
 
 const Nav = styled.nav`
@@ -75,7 +75,14 @@ const Circle = styled(motion.span)`
 const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
-  left: -150px;
+  right: 0px;
+  padding: 5px 10px;
+  padding-left: 35px;
+  z-index: -1;
+  color: white;
+  font-size: 16px;
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
 //로고에 줄 variatns
@@ -97,14 +104,27 @@ function Header() {
   const tvMatch = useMatch("/tv");
 
   const [searchOpen, setSearchOpen] = useState(false);
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
+  //animate를 props로 실행시키는 것이 아니라, 코드로 실행시키고 싶을 때 useAnimation()을 사용
+  const inputAnimation = useAnimation();
+  const toggleSearch = () => {
+    if (searchOpen) {
+      //.start로 애니메이션을 실행시킬 수 있다!
+      inputAnimation.start({
+        scaleX: 0,
+      });
+    } else {
+      inputAnimation.start({ scaleX: 1 });
+    }
+    setSearchOpen((prev) => !prev);
+  };
+
   return (
     <Nav>
       <Col>
         <Logo
           variants={logoVariants}
           whileHover="active"
-          initial="normal"
+          animate="normal"
           xmlns="http://www.w3.org/2000/svg"
           width="1024"
           height="276.742"
@@ -131,7 +151,7 @@ function Header() {
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
             onClick={toggleSearch}
-            animate={{ x: searchOpen ? -180 : 0 }}
+            animate={{ x: searchOpen ? -220 : 0 }}
             transition={{ type: "linear" }}
           >
             <path
@@ -141,8 +161,10 @@ function Header() {
             ></path>
           </motion.svg>
           <Input
+            //useAnimation을 통해서 특정 시점에 원할 때 애니메이션 실행시킬 수 있게 만들었다!
+            animate={inputAnimation}
+            initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
-            animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="Search for movie or tv show..."
           />
         </Search>
