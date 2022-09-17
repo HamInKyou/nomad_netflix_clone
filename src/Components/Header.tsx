@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { Link, useMatch } from "react-router-dom";
-import { motion, useAnimation } from "framer-motion";
-import { useState } from "react";
+import { motion, useAnimation, useScroll } from "framer-motion";
+import { useEffect, useState } from "react";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -98,6 +98,18 @@ const logoVariants = {
   },
 };
 
+//Nav에 줄 variants
+const navVariants = {
+  top: {
+    //맨위에 있을 땐 투명하게
+    backgroundColor: "rgba(0, 0, 0, 0)",
+  },
+  scroll: {
+    //스크롤 내리면 불투명하게
+    backgroundColor: "rgba(0, 0, 0, 1)",
+  },
+};
+
 function Header() {
   //useMatch는 현재 라우트가 인자로 들어간 인자와 동일한지 리턴 (동일하면 true리턴!)
   const homeMatch = useMatch("/");
@@ -117,9 +129,23 @@ function Header() {
     }
     setSearchOpen((prev) => !prev);
   };
-
+  //몇 px정도 스크롤했는지 추적하는 변수
+  const { scrollY } = useScroll();
+  const navAnimation = useAnimation();
+  useEffect(() => {
+    //scrollY 변화를 감지
+    scrollY.onChange(() => {
+      if (scrollY.get() > 80) {
+        //Header 높이보다 더 가면 scroll animation 촉발시키기
+        navAnimation.start("scroll");
+      } else {
+        //아니면 (맨 위에 붙어있으면) top animation 촉발시키기
+        navAnimation.start("top");
+      }
+    });
+  }, [scrollY, navAnimation]);
   return (
-    <Nav>
+    <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
       <Col>
         <Logo
           variants={logoVariants}
