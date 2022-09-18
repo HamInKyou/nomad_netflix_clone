@@ -113,6 +113,8 @@ body {
     sans-serif;
   font-weight: 300;
   line-height: 1.1;
+  color:${(props) => props.theme.white.darker};
+  background-color: black;
 }
 button {
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
