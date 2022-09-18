@@ -16,10 +16,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <RecoilRoot>
-      <GlobalStyle />
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={true} />
         <ThemeProvider theme={theme}>
+          <GlobalStyle />
           <App />
         </ThemeProvider>
       </QueryClientProvider>
