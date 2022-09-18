@@ -65,6 +65,18 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
     transform-origin: center right;
   }
 `;
+const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0; //기본적으로 안보이게
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+`;
 
 const rowVariants = {
   hidden: {
@@ -84,11 +96,21 @@ const boxVariants = {
   },
   hover: {
     scale: 1.3, //사이즈 키우기
-    y: -50, //위로 올라가면서
+    y: -80, //위로 올라가면서
     transition: {
       //hover했을 때만 transition 효과 주기, 마우스 치웠을 땐 transition효과 주지 않음
       delay: 0.2,
       duaration: 0.3,
+    },
+  },
+};
+
+const infoVariants = {
+  hover: {
+    opacity: 1, //호버하면 보이게!
+    transition: {
+      delay: 0.3,
+      duaration: 0.1,
       type: "tween",
     },
   },
@@ -152,7 +174,11 @@ function Home() {
                         transition={{ type: "tween" }} //tween은 linear랑 같은 효과, 모든 애니메이션에 공통적으로 부여함!
                         key={movie.id}
                         bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
-                      />
+                      >
+                        <Info variants={infoVariants}>
+                          <h4>{movie.title}</h4>
+                        </Info>
+                      </Box>
                     )
                   )}
               </Row>
