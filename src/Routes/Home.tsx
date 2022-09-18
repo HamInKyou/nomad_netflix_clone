@@ -58,6 +58,12 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-position: center center;
   height: 200px;
   font-size: 66px;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 
 const rowVariants = {
@@ -69,6 +75,22 @@ const rowVariants = {
   },
   exit: {
     x: -window.outerWidth - 5,
+  },
+};
+
+const boxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3, //사이즈 키우기
+    y: -50, //위로 올라가면서
+    transition: {
+      //hover했을 때만 transition 효과 주기, 마우스 치웠을 땐 transition효과 주지 않음
+      delay: 0.2,
+      duaration: 0.3,
+      type: "tween",
+    },
   },
 };
 
@@ -124,6 +146,10 @@ function Home() {
                       movie //가져온 6개로 렌더링하기
                     ) => (
                       <Box
+                        whileHover="hover"
+                        initial="normal"
+                        variants={boxVariants}
+                        transition={{ type: "tween" }} //tween은 linear랑 같은 효과, 모든 애니메이션에 공통적으로 부여함!
                         key={movie.id}
                         bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
                       />
