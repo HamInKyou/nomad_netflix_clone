@@ -64,7 +64,7 @@ const Overlay = styled(motion.div)`
 const BigMovie = styled(motion.div)`
   position: absolute;
   width: 40vw;
-  height: 80vh;
+  min-height: 80vh;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -88,11 +88,29 @@ const BigTitle = styled.h3`
   top: -80px;
 `;
 
+const BigTagline = styled.p`
+  position: relative;
+  padding: 0 20px;
+  top: -80px;
+  font-weight: 100;
+  font-style: italic;
+  color: ${(props) => props.theme.white.darker};
+`;
 const BigOverview = styled.p`
-  padding: 20px;
+  padding: 5px 20px;
   position: relative;
   top: -80px;
   color: ${(props) => props.theme.white.lighter};
+`;
+const BigGenres = styled.div`
+  padding: 5px 20px;
+  position: relative;
+  top: -80px;
+`;
+
+const GenreBox = styled.div`
+  display: inline-block;
+  margin-right: 10px;
 `;
 
 function Home() {
@@ -175,7 +193,13 @@ function Home() {
                         }}
                       />
                       <BigTitle>{movieData.title}</BigTitle>
+                      <BigTagline>{movieData.tagline}</BigTagline>
                       <BigOverview>{movieData.overview}</BigOverview>
+                      <BigGenres>
+                        {movieData.genres?.map((genre) => (
+                          <GenreBox>{genre.name}</GenreBox>
+                        ))}
+                      </BigGenres>
                     </>
                   )}
                 </BigMovie>
