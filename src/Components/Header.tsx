@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -50,7 +51,7 @@ const Item = styled.li`
   }
 `;
 
-const Search = styled.span`
+const Search = styled.form`
   color: white;
   display: flex;
   align-items: center;
@@ -110,7 +111,12 @@ const navVariants = {
   },
 };
 
+interface IForm {
+  keyword: string;
+}
+
 function Header() {
+  const navigate = useNavigate();
   //useMatch는 현재 라우트가 인자로 들어간 인자와 동일한지 리턴 (동일하면 true리턴!)
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
@@ -144,6 +150,11 @@ function Header() {
       }
     });
   }, [scrollY, navAnimation]);
+
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    navigate(`/search?keyword=${data.keyword}`);
+  };
   return (
     <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
       <Col>
@@ -171,7 +182,7 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -192,6 +203,7 @@ function Header() {
             initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
             placeholder="Search for movie or tv show..."
+            {...register("keyword", { required: true, minLength: 2 })}
           />
         </Search>
       </Col>
