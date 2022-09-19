@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/nomad_netflix_clone/static/js/main.98305ebc.js",
+    "index.html": "/nomad_netflix_clone/index.html",
+    "main.98305ebc.js.map": "/nomad_netflix_clone/static/js/main.98305ebc.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.98305ebc.js"
+  ]
+}
