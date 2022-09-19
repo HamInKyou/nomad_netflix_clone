@@ -114,7 +114,6 @@ function Home() {
     isTopRatedMoviesLoading ||
     isUpcomingMoviesLoading;
 
-  console.log(bigMovieMatch);
   const onOverlayClick = () => navigate("/");
   return (
     <Wrapper>
@@ -132,13 +131,25 @@ function Home() {
           </Banner>
           <UnderBanner>
             {nowPlayingMovies && (
-              <Slider data={nowPlayingMovies} title="현재 상영중인 영화" />
+              <Slider
+                data={nowPlayingMovies}
+                title="현재 상영중인 영화"
+                type="movie"
+              />
             )}
             {topRatedMovies && (
-              <Slider data={topRatedMovies} title="평점 높은 영화" />
+              <Slider
+                data={topRatedMovies}
+                title="평점 높은 영화"
+                type="movie"
+              />
             )}
             {upcomingMovies && (
-              <Slider data={upcomingMovies} title="개봉 예정 영화" />
+              <Slider
+                data={upcomingMovies}
+                title="개봉 예정 영화"
+                type="movie"
+              />
             )}
           </UnderBanner>
           <AnimatePresence>

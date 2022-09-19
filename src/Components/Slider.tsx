@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetMoviesResult } from "../api";
+import { IGetMoviesResult, IGetTvsResult } from "../api";
 import { motion, AnimatePresence } from "framer-motion";
 import { makeImagePath } from "../utils";
 
@@ -104,25 +104,26 @@ const infoVariants = {
 };
 
 interface ISliderProps {
-  data: IGetMoviesResult;
+  data: IGetMoviesResult | IGetTvsResult;
   title: string;
+  type: string;
 }
 
 const OFFSET = 6;
 
-function Slider({ data, title }: ISliderProps) {
+function Slider({ data, title, type }: ISliderProps) {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
-  const [leaving, setLeaving] = useState(false); //현재 다음 스크롤로 넘어가는 이벤트가 진행중인지 알려주는 state
+  const [leaving, setLeaving] = useState(false);
   const [back, setBack] = useState(false);
   const incraseIndex = () => {
     setBack(false);
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1; //슬라이드에서 표현할 총 영화 수 (0번째 인덱스는 배너에 쓸거기 때문에 총 개수에서 뺀다.)
-      const maxIndex = Math.floor(totalMovies / OFFSET) - 1; //최대 Index 구하기, 반내림하여 모든 슬라이드가 비지 않게 했다.
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1)); //최대 인덱스면 다음으로 넘겼을 때 제일 처음으로 돌아오게
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / OFFSET) - 1;
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
   const decraseIndex = () => {
@@ -136,9 +137,15 @@ function Slider({ data, title }: ISliderProps) {
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
-  const toggleLeaving = () => setLeaving((prev) => !prev); //애니메이션 진행중에 increaseIndex 막기 위해서
-  const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onBoxClicked = (id: number) => {
+    if (type === "movie") {
+      navigate(`/movies/${id}`);
+      return;
+    }
+    if (type === "tv") {
+      navigate(`/tv/${id}`);
+    }
   };
 
   return (
@@ -163,19 +170,20 @@ function Slider({ data, title }: ISliderProps) {
             {data?.results
               .slice(1)
               .slice(OFFSET * index, OFFSET * index + OFFSET)
-              .map((movie) => (
+              .map((item) => (
                 <Box
-                  layoutId={movie.id + ""}
+                  layoutId={item.id + ""}
                   whileHover="hover"
                   initial="normal"
                   variants={boxVariants}
                   transition={{ type: "tween" }}
-                  key={movie.id}
-                  bgphoto={makeImagePath(movie.backdrop_path, "w500")}
-                  onClick={() => onBoxClicked(movie.id)}
+                  key={item.id}
+                  bgphoto={makeImagePath(item.backdrop_path, "w500")}
+                  onClick={() => onBoxClicked(item.id)}
                 >
                   <Info variants={infoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{type === "movie" && item.title}</h4>
+                    <h4>{type === "tv" && item.name}</h4>
                   </Info>
                 </Box>
               ))}
