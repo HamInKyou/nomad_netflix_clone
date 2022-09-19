@@ -4,6 +4,7 @@ import { getMovies, IGetMoviesResult } from "../api";
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useMatch } from "react-router-dom";
 
 const Wrapper = styled.div`
   background: black;
@@ -17,14 +18,14 @@ const Loader = styled.div`
   align-items: center;
 `;
 
-const Banner = styled.div<{ bgPhoto: string }>`
+const Banner = styled.div<{ bgphoto: string }>`
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 60px;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgPhoto});
+    url(${(props) => props.bgphoto});
   background-size: cover;
 `;
 
@@ -51,13 +52,14 @@ const Row = styled(motion.div)`
   position: absolute;
 `;
 
-const Box = styled(motion.div)<{ bgPhoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
-  background-image: url(${(props) => props.bgPhoto});
+  background-image: url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center center;
   height: 200px;
   font-size: 66px;
+  cursor: pointer;
   &:first-child {
     transform-origin: center left;
   }
@@ -119,6 +121,9 @@ const infoVariants = {
 const OFFSET = 6; //ROW 하나에 몇개의 박스가 들어갈지
 
 function Home() {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch("/movies/:movieId");
+  console.log(bigMovieMatch);
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
     getMovies
@@ -135,6 +140,9 @@ function Home() {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev); //애니메이션 진행중에 increaseIndex 막기 위해서
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
   return (
     <Wrapper>
       {isLoading ? (
@@ -142,7 +150,7 @@ function Home() {
       ) : (
         <>
           <Banner
-            bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
+            bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
             onClick={incraseIndex}
           >
             <Title>{data?.results[0].title}</Title>
@@ -168,12 +176,14 @@ function Home() {
                       movie //가져온 6개로 렌더링하기
                     ) => (
                       <Box
+                        layoutId={movie.id + ""}
                         whileHover="hover"
                         initial="normal"
                         variants={boxVariants}
                         transition={{ type: "tween" }} //tween은 linear랑 같은 효과, 모든 애니메이션에 공통적으로 부여함!
                         key={movie.id}
-                        bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                        bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                        onClick={() => onBoxClicked(movie.id)}
                       >
                         <Info variants={infoVariants}>
                           <h4>{movie.title}</h4>
@@ -184,6 +194,23 @@ function Home() {
               </Row>
             </AnimatePresence>
           </Slider>
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <motion.div
+                layoutId={bigMovieMatch.params.movieId}
+                style={{
+                  position: "absolute",
+                  width: "40vw",
+                  height: "80vh",
+                  backgroundColor: "red",
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  margin: "0 auto",
+                }}
+              />
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
