@@ -74,3 +74,13 @@ export function getTvDetail(tvId: string | undefined) {
   return fetch(`${BASE_PATH}/tv/${tvId}?api_key=${API_KEY}&language=ko-KR&region=kr
 `).then((response) => response.json());
 }
+
+export function searchMovies(keyword: string) {
+  return fetch(`${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}&language=ko-KR&region=kr
+`).then((response) => response.json());
+}
+
+export function searchTvs(keyword: string) {
+  return fetch(`${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}&language=ko-KR&region=kr
+`).then((response) => response.json());
+}

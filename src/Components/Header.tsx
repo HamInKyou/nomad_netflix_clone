@@ -83,7 +83,7 @@ const Input = styled(motion.input)`
   z-index: -1;
   color: white;
   font-size: 16px;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0);
   border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
